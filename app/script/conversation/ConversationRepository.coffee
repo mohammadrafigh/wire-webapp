@@ -555,7 +555,7 @@ class z.conversation.ConversationRepository
       generic_message = new z.proto.GenericMessage z.util.create_random_uuid()
       generic_message.set 'cleared', message_content
 
-      @sending_queue.add_to_sending_queue => @_send_generic_message @self_conversation().id, generic_message
+      @sending_queue.push => @_send_generic_message @self_conversation().id, generic_message
       .then =>
         @logger.log @logger.levels.INFO,
           "Cleared conversation '#{conversation_et.id}' as read on '#{new Date(cleared_timestamp).toISOString()}'"
@@ -730,7 +730,7 @@ class z.conversation.ConversationRepository
       generic_message = new z.proto.GenericMessage z.util.create_random_uuid()
       generic_message.set 'lastRead', message_content
 
-      @sending_queue.add_to_sending_queue => @_send_generic_message @self_conversation().id, generic_message
+      @sending_queue.push => @_send_generic_message @self_conversation().id, generic_message
       .then =>
         @logger.log @logger.levels.INFO,
           "Marked conversation '#{conversation_et.id}' as read on '#{new Date(timestamp).toISOString()}'"
@@ -795,7 +795,7 @@ class z.conversation.ConversationRepository
       generic_message.set 'asset', asset
       if conversation_et.ephemeral_timer()
         generic_message = @_wrap_in_ephemeral_message generic_message, conversation_et.ephemeral_timer()
-      @sending_queue.add_to_sending_queue => @_send_generic_message conversation_et.id, generic_message
+      @sending_queue.push => @_send_generic_message conversation_et.id, generic_message
     .then =>
       event = @_construct_otr_event conversation_et.id, z.event.Backend.CONVERSATION.ASSET_ADD
       asset = if conversation_et.ephemeral_timer() then generic_message.ephemeral.asset else generic_message.asset
@@ -846,7 +846,7 @@ class z.conversation.ConversationRepository
 
     generic_message = new z.proto.GenericMessage z.util.create_random_uuid()
     generic_message.set 'confirmation', new z.proto.Confirmation message_et.id, z.proto.Confirmation.Type.DELIVERED
-    @sending_queue.add_to_sending_queue => @_send_generic_message conversation_et.id, generic_message, [message_et.user().id], false
+    @sending_queue.push => @_send_generic_message conversation_et.id, generic_message, [message_et.user().id], false
 
   ###
   Sends image asset in specified conversation.
@@ -1129,7 +1129,7 @@ class z.conversation.ConversationRepository
       @on_conversation_event saved_event
 
       # we don't need to wait for the sending to resolve
-      @sending_queue.add_to_sending_queue => @_send_generic_message conversation_et.id, generic_message
+      @sending_queue.push => @_send_generic_message conversation_et.id, generic_message
       .then =>
         if saved_event.type in z.event.EventTypeHandling.STORE
           @_update_message_sent_status conversation_et, saved_event.id
@@ -1401,7 +1401,7 @@ class z.conversation.ConversationRepository
       generic_message.set 'deleted', new z.proto.MessageDelete message_et.id
       return generic_message
     .then (generic_message) =>
-      @sending_queue.add_to_sending_queue => @_send_generic_message conversation_et.id, generic_message, user_ids
+      @sending_queue.push => @_send_generic_message conversation_et.id, generic_message, user_ids
     .then =>
       @_track_delete_message conversation_et, message_et, z.tracking.attribute.DeleteType.EVERYWHERE
     .then =>
@@ -1423,7 +1423,7 @@ class z.conversation.ConversationRepository
       generic_message.set 'hidden', new z.proto.MessageHide conversation_et.id, message_et.id
       return generic_message
     .then (generic_message) =>
-      @sending_queue.add_to_sending_queue => @_send_generic_message @self_conversation().id, generic_message
+      @sending_queue.push => @_send_generic_message @self_conversation().id, generic_message
     .then =>
       @_track_delete_message conversation_et, message_et, z.tracking.attribute.DeleteType.LOCAL
     .then =>

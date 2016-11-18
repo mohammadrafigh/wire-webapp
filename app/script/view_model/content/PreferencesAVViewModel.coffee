@@ -65,7 +65,7 @@ class z.ViewModel.content.PreferencesAVViewModel
     .then ([media_type, media_stream_constraints]) =>
       return @media_stream_handler.request_media_stream media_type, media_stream_constraints
     .then (media_stream_info) =>
-      @media_stream_handler.local_media_type z.calling.enum.MediaType.VIDEO if @available_devices.video_input().length
+      @media_stream_handler.local_media_type z.media_devices.MediaType.VIDEO if @available_devices.video_input().length
       @media_stream_handler.set_local_media_stream media_stream_info
       return @audio_stream()
     .catch (error) =>

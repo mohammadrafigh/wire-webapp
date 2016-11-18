@@ -17,16 +17,23 @@
 #
 
 window.z ?= {}
-z.telemetry ?= {}
-z.telemetry.calling ?= {}
+z.media_devices ?= {}
 
-class z.telemetry.calling.VideoStreamStats extends z.telemetry.calling.MediaStreamStats
-  constructor: (timestamp) ->
-    super timestamp
-    @media_type = z.media_devices.MediaType.VIDEO
-    @frame_height_received = 0
-    @frame_height_sent = 0
-    @frame_rate_received = 0
-    @frame_rate_sent = 0
-    @frame_width_received = 0
-    @frame_width_sent = 0
+# MediaDevices Repository
+class z.media_devices.MediaDevicesRepository
+  ###
+  Extended check for calling support of browser.
+  @param conversation_id [String] Conversation ID
+  @return [Boolean] True if calling is supported
+  ###
+  @supports_media_devices: ->
+    return z.util.Environment.browser.supports.media_devices
+
+  ###
+  Construct a new MediaDevices repository.
+  @param call_center [z.calling.CallCenter] Call center with references to all other handlers
+  ###
+  constructor: (@call_center) ->
+    @logger = new z.util.Logger 'z.media_devices.MediaDevicesRepository', z.config.LOGGER.OPTIONS
+
+    @media_devices_handler = new z.media_devices.MediaDevicesHandler @

@@ -17,16 +17,10 @@
 #
 
 window.z ?= {}
-z.telemetry ?= {}
-z.telemetry.calling ?= {}
+z.media_devices ?= {}
 
-class z.telemetry.calling.VideoStreamStats extends z.telemetry.calling.MediaStreamStats
-  constructor: (timestamp) ->
-    super timestamp
-    @media_type = z.media_devices.MediaType.VIDEO
-    @frame_height_received = 0
-    @frame_height_sent = 0
-    @frame_rate_received = 0
-    @frame_rate_sent = 0
-    @frame_width_received = 0
-    @frame_width_sent = 0
+z.media_devices.MediaDeviceType =
+  AUDIO_INPUT: 'audioinput'
+  AUDIO_OUTPUT: 'audiooutput'
+  SCREEN_INPUT: 'screeninput'
+  VIDEO_INPUT: 'videoinput'

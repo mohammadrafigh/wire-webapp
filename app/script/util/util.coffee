@@ -262,7 +262,7 @@ Checks if input is a version 4 UUID
 ###
 z.util.is_uuid = (uuid) ->
   uuid = UUID.parse uuid
-  return uuid && uuid.version is 4
+  return uuid and uuid.version is 4
 
 z.util.encode_base64 = (text) ->
   return window.btoa text

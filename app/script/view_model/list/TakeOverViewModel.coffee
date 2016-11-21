@@ -34,9 +34,9 @@ class z.ViewModel.list.TakeOverViewModel
     @name = ko.pureComputed => @self_user()?.name()
     @username = ko.pureComputed => @self_user()?.username()
 
-  keep_username: =>
+  keep_username: ->
     amplify.publish z.event.WebApp.TAKEOVER.DISMISS
 
-  choose_username: =>
+  choose_username: ->
     amplify.publish z.event.WebApp.TAKEOVER.DISMISS
     amplify.publish z.event.WebApp.PREFERENCES.MANAGE_ACCOUNT
